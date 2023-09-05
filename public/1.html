@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - background-image fit to the window size made with three.js</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<canvas class="canvas-bg" id="canvas-bg"></canvas>
+<script id="vs" type="x-shader/x-vertex">
+  attribute vec3 position;
+  attribute vec2 uv;
+  
+  varying vec2 vUv;
+  
+  void main(void) {
+    vUv = uv;
+    gl_Position = vec4(position, 1.0);
+  }
+  
+</script>
+<!-- <img id="gif" src="./newmap_gif.gif"/> -->
+<script id="fs" type="x-shader/x-fragment">
+  precision highp float;
+  
+  uniform vec2 resolution;
+  uniform vec2 imageResolution;
+  uniform sampler2D texture;
+  
+  varying vec2 vUv;
+  
+  void main(void) {
+    vec2 ratio = vec2(
+        min((resolution.x / resolution.y) / (imageResolution.x / imageResolution.y), 1.0),
+        min((resolution.y / resolution.x) / (imageResolution.y / imageResolution.x), 1.0)
+      );
+  
+    vec2 uv = vec2(
+        vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
+        vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
+      );
+    gl_FragColor = texture2D(texture, uv);
+  }
+</script>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js'></script><script  src="./script.js"></script>
+
+</body>
+</html>
